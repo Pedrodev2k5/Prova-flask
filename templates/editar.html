@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titulo %}Editar produto{% endblock %}
+
+{% block conteudo %}
+<h1>Editar produto</h1>
+
+<div class="card">
+    <form method="POST" enctype="multipart/form-data">
+        <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" value="{{ form.get('nome', produto.nome) }}" required>
+        </div>
+        <div class="campo">
+            <label for="preco">Preço (R$)</label>
+            <input type="text" id="preco" name="preco"
+                   value="{{ form.get('preco', ('%.2f'|format(produto.preco)).replace('.', ',')) }}" required>
+        </div>
+        <div class="campo">
+            <label for="categoria_id">Categoria</label>
+            <select id="categoria_id" name="categoria_id" required>
+                {% set selecionada = (form.get('categoria_id') or produto.categoria_id)|string %}
+                {% for c in categorias %}
+                    <option value="{{ c.id }}" {% if selecionada == c.id|string %}selected{% endif %}>{{ c.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="campo">
+            <label>Foto atual</label>
+            <img src="{{ url_for('static', filename='uploads/' ~ produto.imagem) }}"
+                 alt="{{ produto.nome }}" width="120">
+        </div>
+        <div class="campo">
+            <label for="imagem">Trocar foto (opcional: png, jpg, jpeg, gif)</label>
+            <input type="file" id="imagem" name="imagem" accept=".png,.jpg,.jpeg,.gif">
+        </div>
+        <button type="submit" class="btn-primario">Salvar alterações</button>
+        <a href="{{ url_for('main.index') }}" class="btn btn-neutro">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

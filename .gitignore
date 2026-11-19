@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Ambiente virtual
+venv/
+.venv/
+env/
+
+# Banco de dados local
+instance/
+*.db
+*.sqlite3
+
+# Variáveis de ambiente
+.env
+
+# Uploads dos usuários (mantém apenas a imagem padrão)
+static/uploads/*
+!static/uploads/padrao.png
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

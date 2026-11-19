@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block titulo %}Produtos{% endblock %}
+
+{% block conteudo %}
+<h1>Cadastro de Produtos</h1>
+
+<div class="card">
+    <h2>Novo produto</h2>
+    <form action="{{ url_for('main.cadastrar') }}" method="POST" enctype="multipart/form-data">
+        <div class="campo">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" value="{{ form.get('nome', '') }}" required>
+        </div>
+        <div class="campo">
+            <label for="preco">Preço (R$)</label>
+            <input type="text" id="preco" name="preco" value="{{ form.get('preco', '') }}" placeholder="0,00" required>
+        </div>
+        <div class="campo">
+            <label for="categoria_id">Categoria</label>
+            <select id="categoria_id" name="categoria_id" required>
+                <option value="">Selecione...</option>
+                {% for c in categorias %}
+                    <option value="{{ c.id }}" {% if form.get('categoria_id') == c.id|string %}selected{% endif %}>{{ c.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="campo">
+            <label for="imagem">Imagem (opcional: png, jpg, jpeg, gif)</label>
+            <input type="file" id="imagem" name="imagem" accept=".png,.jpg,.jpeg,.gif">
+        </div>
+        <button type="submit" class="btn-primario">Cadastrar</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>Produtos cadastrados</h2>
+
+    <form method="GET" action="{{ url_for('main.index') }}" class="busca">
+        <input type="text" name="busca" value="{{ busca }}" placeholder="Buscar produto pelo nome...">
+        <button type="submit" class="btn-primario">Buscar</button>
+        {% if busca %}<a href="{{ url_for('main.index') }}" class="btn btn-neutro">Limpar</a>{% endif %}
+    </form>
+
+    {% if produtos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Categoria</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for p in produtos %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='uploads/' ~ p.imagem) }}" alt="{{ p.nome }}"></td>
+                <td>{{ p.nome }}</td>
+                <td>R$ {{ ('%.2f'|format(p.preco)).replace('.', ',') }}</td>
+                <td>{{ p.categoria.nome }}</td>
+                <td>
+                    <div class="acoes">
+                        <a href="{{ url_for('main.editar', id=p.id) }}" class="btn btn-editar">Editar</a>
+                        <form action="{{ url_for('main.excluir', id=p.id) }}" method="POST"
+                              onsubmit="return confirm('Excluir este produto?');">
+                            <button type="submit" class="btn-excluir">Excluir</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p class="vazio">Nenhum produto encontrado.</p>
+    {% endif %}
+</div>
+{% endblock %}
